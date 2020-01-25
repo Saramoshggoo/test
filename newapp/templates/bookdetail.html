@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=
+    , initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+    <title>Document</title>
+</head>
+<style>
+.results{
+    display:inline-block;
+    width: 600px;
+    vertical-align: top;
+}
+#logout{
+   text-align: right;
+   padding-top:20px; 
+}
+.head{
+    border-bottom:1px solid grey;
+}
+.main{
+    vertical-align: top;
+    display: inline-block;
+    width: 650px;
+    text-align: center;
+   
+    min-height: 300px;
+    margin-left:20px;
+    margin-top:30px;
+    background-color: lavender;
+
+ border-radius: 18px;
+
+}
+main p{
+    color: rgb(202, 202, 208);
+}
+#title{
+
+    width:400px;
+    font-size: 20px;
+}
+button a{
+    color:white;
+}
+ul{
+    list-style-type: none; 
+}
+
+.form{
+ background-color: lavender;
+ padding:20px 0 20px 0px ;
+ border-radius: 18px;
+ margin: auto;
+
+ text-align: center;
+
+}
+</style>
+<body>
+        <div class="head">
+                <div class="results">
+               <h1>Welcome, {{user.firstname}}</h1>
+            
+                </div>
+            <div class="results" id="logout"><a class="booktitle" href="/book">back</a> | <a class="booktitle" href="/logout">logout</a></div>
+        </div>
+            {%if user.id == bookdetail.uploaded.id%}
+            <div class='main'>
+                {% if messages %}
+                <ul class="messages">    
+                {% for message in messages %}    
+                <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>    
+                {% endfor %}
+                </ul>
+                {% endif %}
+                <form action="/update/{{bookdetail.id}}" method="post" class="form">
+                
+                    {%csrf_token%}
+                    <h2>  <input type="text" name="title" id="title" value='{{bookdetail.title}}'></h2>
+                    <h4> <b>Added By:</b> {{bookdetail.uploaded.firstname}} {{bookdetail.uploaded.lastname}}</h4> 
+                    <h4> <b>Added On:</b>{{bookdetail.created_at}}</h4>
+                    <h4><b>Last Updated On: </b>{{bookdetail.updated_at}}</h4>
+                    <p>  <b>Description: </b></p>
+                    <p>   <textarea name="desc" id="" cols="80" rows="10">  {{bookdetail.desc}}</textarea></p> 
+                    <button type="submit" class="btn btn-primary ">Edit</button>
+                     <button  class="btn btn-primary "type="submit"><a href="/delete/{{bookdetail.id}}"> Delete</a> </button>  
+                </form>
+                
+             </div>
+          
+            {%else%}
+             <div class="main">
+                <h2>{{bookdetail.title}}</h2>
+                 <h3><b>Added By:</b> {{bookdetail.uploaded.firstname}} {{bookdetail.uploaded.lastname}}</h3> 
+                 <h3> <b>Added On:</b>{{bookdetail.created_at}}</h3>
+                 <h3><b>Last Updated On: </b>{{bookdetail.updated_at}}</h3>
+                 <h3><b>Description: </b>{{bookdetail.desc}}</h3>
+            </div>
+        {%endif%}
+            <div class="main">
+                {%if  bookdetail.userslike%}
+                 <h2>User Who Like This BOOK:</h2>
+                 {% for detail in bookdetail.userslike.all%}
+                 <ul><li>{{detail.firstname}} {{detail.lastname}}</li></ul>
+                   {%endfor%}
+               {%endif%}
+               {%if user in bookdetail.userslike.all%}
+                  <h3> is your favorite now</h3>
+                  <a href="/removefavorite/{{bookdetail.id}}">it is not your favorite anymore</a>
+                {%else%}
+                 <a href="/addfavorite/{{bookdetail.id}}">add this book to your favorite</a>
+                {%endif%}
+            
+      
+        </div>
+</body>
+</html>
